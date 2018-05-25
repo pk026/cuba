@@ -11,6 +11,7 @@ FROM ubuntu
 RUN apt-get update
 RUN apt-get -qq -y install curl
 RUN apt-get -qq -y install wget
+RUN apt-get update && apt-get install -my wget gnupg
 RUN wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
 RUN apt-get update && apt-get install -y python-software-properties software-properties-common postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
 USER postgres
