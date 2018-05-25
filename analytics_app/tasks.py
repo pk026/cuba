@@ -2,14 +2,8 @@
 from __future__ import unicode_literals
 import datetime
 from cuba.cuba_celery import app
+from analytics_app.utils import import_models
 
-
-def _import_models(model):
-    analytics_app_app_models = __import__(
-        'analytics_app.models', fromlist=[model]
-    )
-    model = getattr(analytics_app_app_models, model)
-    return model
 
 @app.task
 def notify_user(notif_type):
@@ -22,7 +16,8 @@ def notify_user(notif_type):
 
 @app.task
 def bill_feedback(user_id):
-    Feedback = _import_models('Feedback')
+    Feedback = import_models('Feedback')
     time = datetime.datetime.now() - datetime.timedelta(minutes=15)
     if not Feedback.objects.filter(user_id=user_id, created__gte=time).exists():
         print "we did not get any feedback for user {0}".format(user_id)
+        # notify cuba operator

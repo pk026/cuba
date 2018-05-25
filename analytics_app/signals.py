@@ -2,19 +2,14 @@
 from __future__ import unicode_literals
 import datetime
 from .tasks import notify_user, bill_feedback
+from analytics_app.utils import import_models
 
-
-def _import_models(model):
-    analytics_app_app_models = __import__(
-        'analytics_app.models', fromlist=[model]
-    )
-    model = getattr(analytics_app_app_models, model)
-    return model
 
 def event_trigger_on_new_event(sender, **kwargs):
     instance = kwargs['instance']
-    Event = _import_models('Event')
+    Event = import_models('Event')
     if instance.noun=='bill' and instance.verb=='paid':
+        # start timer to check if feedback comes in 15 mins
         bill_feedback.apply_async((instance.user_id,), countdown=900)
         bill_pay_events = Event.objects.filter(
             user_id=instance.user_id, noun='bill', verb='paid'

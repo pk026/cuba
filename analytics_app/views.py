@@ -10,9 +10,10 @@ class FeedbackViewset(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
-
+    http_method_names = ['POST']
 
 class EventViewset(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    http_method_names = ['POST']
