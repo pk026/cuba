@@ -5,6 +5,27 @@ The server will expose a http end-point to which the events would be posted.
 Also the server will contain an admin interface to specify business rules, that alert the operator 
 (an engineer in the Cube Ops team) or trigger an action (like sending an alert sms to the end user),
 when certain criteria is met.
+# project design
+1. We have two tables event and feedback
+2. We have two apis /api/v1/event/ and /api/v1/feedback/
+3. User keep posting data on these apis.
+4. For now I haven't implemented any athentication and we are relying on client who knows his user id
+5. We may implement token based authentication, so client can post data with his token in header of http
+6. With token post api we do not need to rely on user and we would his user is using token.
+7. We are using pre_save signal of django to trigger the notifications.
+8. Every time we save something in event table we check if it is bill payment.
+	if yes (no database query in this part)
+		a. we fire bill_feedback_timer which checks database feedback table after 15 minutes
+		   if any feedback from this user in last 15 minutes. (one database query existance of row?)
+			notify cuba operator that this user have not submitted any feedback after bill payment.	
+		b. we check if this is first bill mayment of this user
+			if yes (one database query)
+				invoke a non-blocking celery task which will notify user for his first ever bill mayment.
+			else we check if user have 5 or more bill payments transactions in last 5 minutes (one database query may be we can cache bill mayment transaction for 5 minutes to get rid of this query)
+				if yes
+					add the paid amount if it is 20000 or more
+						invoke a non-blocking celery task which notify user for the outstanding bill payment
+
 # stacks used
 django, djangorestframework, celery, postgresql, redis
 
