@@ -1,7 +1,7 @@
 FROM python:3
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /cuba
-WORKDIR /code
+WORKDIR /cuba
 ADD requirements.txt /cuba/
 RUN pip install -r requirements.txt
 ADD . /cuba/
