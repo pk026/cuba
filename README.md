@@ -38,6 +38,7 @@ django, djangorestframework, celery, postgresql, redis
 4. upgrade pip using: pip install --upgrade pip
 5. install requirements using: pip install -r requirements.txt
 6. make database setting proper: create a database with name:cuba, user:pramod, password: postgres
+7. install redis and run it on machine
 or you can create database with your own set of parameters and update them into settings.py: DATABASES
 7. create database schema using: python manage.py migrate
 8. create a superuser: python manage.py createsuperuser
